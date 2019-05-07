@@ -14,9 +14,17 @@ endif
 let g:autoloaded_translate = 1
 let s:translate_bufname = "TRANSLATE RESULT"
 
-let g:translate_source = "en"
-let g:translate_target = "ja"
-let g:translate_winsize = 10
+if !exists('g:translate_source')
+    let g:translate_source = "en"
+endif
+
+if !exists('g:translate_target')
+    let g:translate_target = "ja"
+endif
+
+if !exists('g:translate_winsize')
+    let g:translate_winsize = 10
+endif
 
 function! translate#translate(bang, start, end, ...) abort
     let text = join(getline(a:start, a:end), " ")
