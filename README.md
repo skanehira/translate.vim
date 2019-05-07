@@ -18,17 +18,23 @@ repo = 'skanehira/translate.vim'
 # Usage
 The default is to translate English into Japanese.
 
+Translate current line
 ```vim
-# translate current line
 :Translate
+```
 
-# translate specified words
+Translate specified words
+```vim
 :Translate hello my name is gorilla
+```
 
-# toggle between resource and target to translate when using "!"
+Toggle between resource and target to translate when using "!"
+```vim
 :Translate!
+```
 
-# translate selected lines
+Translate selected lines
+```vim
 :'<,'>Translate
 ```
 
