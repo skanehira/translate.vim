@@ -16,6 +16,7 @@ repo = 'skanehira/translate.vim'
 Default translate english to japanese.
 
 ```vim
+# translate specified words
 :Translate hello my name is gorilla
 
 # translate selected text
