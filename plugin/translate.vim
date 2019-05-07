@@ -18,7 +18,7 @@ let g:translate_target = "ja"
 let s:translate_buf = "translated"
 
 function! translate#translate(text) abort
-    let result = system("gtran -text='".a:text."' -source=".g:translate_source." -target=".g:translate_target)
+    let result = trim(system("gtran -text='".a:text."' -source=".g:translate_source." -target=".g:translate_target))
 
     " get current buffer
     let currentw = bufnr('%')
@@ -36,22 +36,19 @@ function! translate#translate(text) abort
     endif
 
     " insert result
-    execute ':%d | normal i' . result 
+    execute ':%d'
+    call append(0, result)
 
     " focus current window
     call win_gotoid(win_findbuf(currentw)[0])
 endfunction
 
-function! translate#translateSelected() abort
-    let tmp = @@
-    execute 'silent normal gvy'
-    let selected = @@
-    let @@ = tmp
-    call translate#translate(selected)
+function! translate#translateSelected(start, end) abort
+    call translate#translate(join(getline(a:start, a:end),""))
 endfunction
 
 command! -nargs=1 Translate call translate#translate(<f-args>)
-command! -range TranslateSelected call translate#translateSelected()
+command! -range TranslateSelected call translate#translateSelected(<line1>, <line2>)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
