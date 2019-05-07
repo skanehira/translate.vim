@@ -1,6 +1,8 @@
 # translate.vim
 This is language translate plugin.
 
+![](https://i.imgur.com/pQ3hKes.gif)
+
 # Requirement
 - [gtran](https://github.com/skanehira/gtran)
 
