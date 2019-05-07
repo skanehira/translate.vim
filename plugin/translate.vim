@@ -7,11 +7,11 @@ set cpo&vim
 
 scriptencoding utf-8
 
-if exists('g:autoloaded_vsession')
+if exists('g:autoloaded_translate')
     finish
 endif
 
-"let g:autoloaded_vsession = 1
+let g:autoloaded_translate = 1
 
 let g:translate_source = "en"
 let g:translate_target = "ja"
