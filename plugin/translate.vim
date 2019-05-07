@@ -44,7 +44,7 @@ function! translate#translate(text) abort
 endfunction
 
 function! translate#translateSelected(start, end) abort
-    call translate#translate(join(getline(a:start, a:end),""))
+    call translate#translate(join(getline(a:start, a:end)," "))
 endfunction
 
 command! -nargs=1 Translate call translate#translate(<f-args>)
