@@ -15,7 +15,11 @@ let g:autoloaded_translate = 1
 let s:translate_bufname = "TRANSLATE RESULT"
 
 function! translate#translate(bang, start, end, ...) abort
-    let text = join(getline(a:start, a:end), " ")
+    let ln = "\n"
+    if &ff == "dos"
+        let ln = "\r\n"
+    endif
+    let text = join(getline(a:start, a:end), ln)
     if !empty(a:000)
         let text = a:000[0]
     endif
@@ -51,8 +55,8 @@ function! translate#translate(bang, start, end, ...) abort
     endif
 
     " insert result
-    execute ':%d'
-    call append(0, result)
+    silent % d _
+    call setline(1, split(result, '\r\?\n'))
 
     " focus current window
     call win_gotoid(win_findbuf(currentw)[0])
