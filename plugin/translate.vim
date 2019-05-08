@@ -14,18 +14,6 @@ endif
 let g:autoloaded_translate = 1
 let s:translate_bufname = "TRANSLATE RESULT"
 
-if !exists('g:translate_source')
-    let g:translate_source = "en"
-endif
-
-if !exists('g:translate_target')
-    let g:translate_target = "ja"
-endif
-
-if !exists('g:translate_winsize')
-    let g:translate_winsize = 10
-endif
-
 function! translate#translate(bang, start, end, ...) abort
     let text = join(getline(a:start, a:end), " ")
     if !empty(a:000)
@@ -37,23 +25,27 @@ function! translate#translate(bang, start, end, ...) abort
         return
     endif
 
-    let cmd = "gtran -text='".text."' -source=".g:translate_source." -target=".g:translate_target
+    let source_ = get(g:, "translate_source", "en")
+    let target = get(g:, "translate_target","ja")
+
+    let cmd = "gtran -text='".text."' -source=".source_." -target=".target
     if a:bang == '!'
-        let cmd = "gtran -text='".text."' -source=".g:translate_target." -target=".g:translate_source
+        let cmd = "gtran -text='".text."' -source=".target." -target=".source_
     endif
     let result = trim(system(cmd))
 
     " get current buffer
     let currentw = bufnr('%')
 
+    let winsize_ = get(g:,"translate_winsize", 10)
     if !bufexists(s:translate_bufname)
         " create new buffer
-        execute str2nr(g:translate_winsize, 10).'new' s:translate_bufname
+        execute str2nr(winsize_).'new' s:translate_bufname
     else
         " focus translate window
         let buf = bufnr(s:translate_bufname)
         if empty(win_findbuf(buf))
-            execute str2nr(g:translate_winsize, 10).'new|e' s:translate_bufname
+            execute str2nr(winsize_).'new|e' s:translate_bufname
         endif
         call win_gotoid(win_findbuf(buf)[0])
     endif
