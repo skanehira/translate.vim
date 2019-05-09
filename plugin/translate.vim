@@ -7,11 +7,11 @@ set cpo&vim
 
 scriptencoding utf-8
 
-if exists('g:autoloaded_translate')
+if exists('g:loaded_translate')
     finish
 endif
 
-let g:autoloaded_translate = 1
+let g:loaded_translate = 1
 let s:translate_bufname = "TRANSLATE RESULT"
 
 function! translate#translate(bang, start, end, ...) abort
@@ -36,7 +36,7 @@ function! translate#translate(bang, start, end, ...) abort
     if a:bang == '!'
         let cmd = "gtran -text='".text."' -source=".target." -target=".source_
     endif
-    let result = trim(system(cmd))
+    let result = systemlist(cmd)
 
     " get current buffer
     let currentw = bufnr('%')
@@ -56,7 +56,7 @@ function! translate#translate(bang, start, end, ...) abort
 
     " insert result
     silent % d _
-    call setline(1, split(result, '\r\?\n'))
+    call setline(1, result)
 
     " focus current window
     call win_gotoid(win_findbuf(currentw)[0])
