@@ -25,7 +25,7 @@ function! translate#translate(bang, start, end, ...) abort
     endif
 
     if text == ""
-        echoerr "text is empty"
+        echoerr "target text is empty"
         return
     endif
 
