@@ -13,6 +13,7 @@ endif
 
 let g:loaded_translate = 1
 let s:translate_bufname = "TRANSLATE RESULT"
+let s:currentw = ""
 
 function! translate#translate(bang, start, end, ...) abort
     let ln = "\n"
@@ -30,16 +31,14 @@ function! translate#translate(bang, start, end, ...) abort
     endif
 
     let source_ = get(g:, "translate_source", "en")
-    let target = get(g:, "translate_target","ja")
+    let target = get(g:, "translate_target", "ja")
 
-    let cmd = "gtran -text='".text."' -source=".source_." -target=".target
+    let cmd = ["gtran", "-text=".text, "-source=".source_, "-target=".target]
     if a:bang == '!'
-        let cmd = "gtran -text='".text."' -source=".target." -target=".source_
+        let cmd = ["gtran", "-text=".text, "-source=".target, "-target=".source_]
     endif
-    let result = systemlist(cmd)
 
-    " get current buffer
-    let currentw = bufnr('%')
+    let s:currentw = bufnr('%')
 
     let winsize_ = get(g:,"translate_winsize", 10)
     if !bufexists(s:translate_bufname)
@@ -56,10 +55,13 @@ function! translate#translate(bang, start, end, ...) abort
 
     " insert result
     silent % d _
-    call setline(1, result)
+    call win_gotoid(win_findbuf(s:currentw)[0])
 
-    " focus current window
-    call win_gotoid(win_findbuf(currentw)[0])
+    let job_options = {
+                \"out_io":"buffer",
+                \"out_buf":bufnr(s:translate_bufname),
+                \}
+    let job = job_start(cmd, job_options)
 endfunction
 
 command! -bang -range -nargs=? Translate call translate#translate("<bang>", <line1>, <line2>, <f-args>)
