@@ -118,6 +118,7 @@ function! s:close_window(wn) abort
         let list = win_findbuf(a:wn)
         if !empty(list)
             execute win_id2win(list[0]) "close!"
+            execute "bdelete!" a:wn
         endif
     endif
 endfunction
