@@ -21,6 +21,9 @@ repo = 'skanehira/translate.vim'
 # Usage
 The default is to translate English into Japanese.
 
+The language code is bellow.  
+https://cloud.google.com/translate/docs/languages
+
 Translate current line
 ```vim
 :Translate
@@ -72,3 +75,4 @@ let g:translate_source = "en"
 let g:translate_target = "ja"
 let g:translate_winsize = 10
 ```
+
