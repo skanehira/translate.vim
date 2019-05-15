@@ -21,7 +21,7 @@ let s:result = []
 " used in translate mode
 let s:bang = ""
 let s:current_mode = 0
-let s:real_time_mode = 1
+let s:auto_trans_mode = 1
 
 " translate
 function! translate#translate(bang, line1, line2, ...) abort
@@ -34,7 +34,7 @@ function! translate#translate(bang, line1, line2, ...) abort
     let start = a:line1
     let end = a:line2
 
-    if s:current_mode == s:real_time_mode
+    if s:current_mode == s:auto_trans_mode
         let start = 1
         let end = getpos("$")[1]
         let cmd = s:create_cmd(s:getline(start, end, ln, a:000), s:bang)
@@ -133,9 +133,9 @@ endfunction
 
 " enable auto translate mode
 function! translate#autoTranslateModeEnable(bang) abort
-    if s:current_mode != s:real_time_mode
+    if s:current_mode != s:auto_trans_mode
         inoremap <CR> <C-o>:Translate<CR><CR>
-        let s:current_mode = s:real_time_mode
+        let s:current_mode = s:auto_trans_mode
         call s:create_tran_window()
         call s:focus_window(bufnr(s:currentw))
         let s:bang = a:bang
@@ -157,7 +157,7 @@ endfunction
 
 " auto translate mode toggle
 function! translate#autoTranslateModeToggle(bang) abort
-    if s:current_mode == s:real_time_mode
+    if s:current_mode == s:auto_trans_mode
         call translate#autoTranslateModeDisable(a:bang)
     else
         call translate#autoTranslateModeEnable(a:bang)
