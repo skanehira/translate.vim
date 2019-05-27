@@ -22,6 +22,7 @@ let s:result = []
 let s:bang = ""
 let s:current_mode = 0
 let s:auto_trans_mode = 1
+let s:support_popup = has("patch-8.1.1391")
 
 " translate
 function! translate#translate(bang, line1, line2, ...) abort
@@ -87,47 +88,73 @@ endfunction
 " set command result to translate window buffer
 function! s:tran_exit_cb(job, status) abort
     call s:create_tran_window()
-    call setline(1, s:result)
     call s:focus_window(bufnr(s:currentw))
     echo ""
 endfunction
 
 " create translate result window
 function! s:create_tran_window() abort
-    let s:currentw = bufnr('%')
+    if s:support_popup
+        popupc
+        if !empty(s:result)
+            let maxwidth = 30
+            for str in s:result
+                let length = len(str)
+                if  length > maxwidth
+                    let maxwidth = length
+                endif
+            endfor
+            let pos = getpos('.')
+            let line = pos[1]
+            let col = pos[2]
 
-    let winsize_ = get(g:,"translate_winsize", 10)
-    if !bufexists(s:translate_bufname)
-        " create new buffer
-        execute str2nr(winsize_).'new' s:translate_bufname
-    else
-        " focus translate window
-        let tranw = bufnr(s:translate_bufname)
-        if empty(win_findbuf(tranw))
-            execute str2nr(winsize_).'new|e' s:translate_bufname
+            if line <= 1
+                let line = line + len(s:result)
+            else
+                let line = line - len(s:result)
+            endif
+
+            call winbufnr(popup_create(s:result, {'line':line, 'col':col, 'maxwidth': maxwidth}))
         endif
-        call s:focus_window(tranw)
-    endif
+    else
+        let s:currentw = bufnr('%')
 
-    silent % d _
+        let winsize_ = get(g:,"translate_winsize", 10)
+        if !bufexists(s:translate_bufname)
+            " create new buffer
+            execute str2nr(winsize_).'new' s:translate_bufname
+        else
+            " focus translate window
+            let tranw = bufnr(s:translate_bufname)
+            if empty(win_findbuf(tranw))
+                execute str2nr(winsize_).'new|e' s:translate_bufname
+            endif
+            call s:focus_window(tranw)
+        endif
+
+        silent % d _
+        if !empty(s:result)
+            call setline(1, s:result)
+        endif
+    endif
 endfunction
 
 " close specified window
-function! s:close_window(wn) abort
-    if a:wn != ""
-        let list = win_findbuf(a:wn)
+function! s:close_window(bid) abort
+    if a:bid != ""
+        let list = win_findbuf(a:bid)
         if !empty(list)
             execute win_id2win(list[0]) "close!"
-            execute "bdelete!" a:wn
+            execute "bdelete!" a:bid
         endif
     endif
 endfunction
 
 " focus spcified window.
-" wn arg is window number that can use bufnr to get.
-function! s:focus_window(wn) abort
-    if !empty(win_findbuf(a:wn))
-        call win_gotoid(win_findbuf(a:wn)[0])
+" bid arg is buffer id that can use bufnr to get.
+function! s:focus_window(bid) abort
+    if !empty(win_findbuf(a:bid))
+        call win_gotoid(win_findbuf(a:bid)[0])
     endif
 endfunction
 
