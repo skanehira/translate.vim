@@ -38,10 +38,15 @@ function! translate#translate(bang, line1, line2, ...) abort
     if s:current_mode == s:auto_trans_mode
         let start = 1
         let end = getpos("$")[1]
-        let cmd = s:create_cmd(s:getline(start, end, ln, a:000), s:bang)
-    else
-        let cmd = s:create_cmd(s:getline(start, end, ln, a:000), a:bang)
     endif
+
+    if !empty(a:000)
+        let lines = a:000
+    else
+        let lines = getline(start, end)
+    endif
+
+    let cmd = s:create_cmd(join(lines, ln), s:bang)
 
     if empty(cmd)
         return
@@ -58,20 +63,6 @@ function! translate#translate(bang, line1, line2, ...) abort
                 \"callback": function("s:tran_out_cb"),
                 \"exit_cb": function("s:tran_exit_cb"),
                 \})
-endfunction
-
-" get text from selected lines or args
-function! s:getline(start, end, ln, args) abort
-    let text = getline(a:start, a:end)
-    if !empty(a:args)
-        let text = a:args
-    endif
-
-    if empty(text)
-        finish
-    endif
-
-    return join(text, a:ln)
 endfunction
 
 " create gtran command with text and bang
