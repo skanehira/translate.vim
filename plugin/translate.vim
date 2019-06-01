@@ -71,12 +71,12 @@ function! s:create_cmd(text, bang) abort
         return []
     endif
 
-    let source_ = get(g:, "translate_source", "en")
+    let source = get(g:, "translate_source", "en")
     let target = get(g:, "translate_target", "ja")
 
-    let cmd = ["gtran", "-text=".a:text, "-source=".source_, "-target=".target]
+    let cmd = ["gtran", "-text=".a:text, "-source=".source, "-target=".target]
     if a:bang == '!'
-        let cmd = ["gtran", "-text=".a:text, "-source=".target, "-target=".source_]
+        let cmd = ["gtran", "-text=".a:text, "-source=".target, "-target=".source]
     endif
     return cmd
 endfunction
