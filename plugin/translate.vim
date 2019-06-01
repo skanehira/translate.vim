@@ -93,10 +93,10 @@ function! s:tran_exit_cb(job, status) abort
 endfunction
 
 " close popup window when cursor is moved
-func s:popup_filter(winid, key)
+function! s:popup_filter(winid, key)
     " not catch CursorHold event
     " when airblade/vim-gitgutter is installed CursolHold event will send
-    if a:key != "<80><fd>`"
+    if a:key != "\<CursorHold>"
         call feedkeys(a:key, mode())
         call popup_close(a:winid)
         return 1
