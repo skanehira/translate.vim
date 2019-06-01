@@ -22,7 +22,7 @@ let s:result = []
 let s:bang = ""
 let s:current_mode = 0
 let s:auto_trans_mode = 1
-let s:support_popup = has("patch-8.1.1391")
+let s:support_popup = has("patch-8.1.1444")
 
 " translate
 function! translate#translate(bang, line1, line2, ...) abort
@@ -92,6 +92,18 @@ function! s:tran_exit_cb(job, status) abort
     echo ""
 endfunction
 
+" close popup window when cursor is moved
+func s:popup_filter(winid, key)
+    " not catch CursorHold event
+    " when airblade/vim-gitgutter is installed CursolHold event will send
+    if a:key != "<80><fd>`"
+        call feedkeys(a:key, mode())
+        call popup_close(a:winid)
+        return 1
+    endif
+    return 0
+endfunc
+
 " create translate result window
 function! s:create_tran_window() abort
     if s:support_popup
@@ -114,7 +126,7 @@ function! s:create_tran_window() abort
                 let line = line - len(s:result)
             endif
 
-            call winbufnr(popup_create(s:result, {'line':line, 'col':col, 'maxwidth': maxwidth}))
+            call winbufnr(popup_create(s:result, {'line':line, 'col':col, 'maxwidth': maxwidth, 'filter': function("s:popup_filter")}))
         endif
     else
         let s:currentw = bufnr('%')
