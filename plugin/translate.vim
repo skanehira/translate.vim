@@ -22,6 +22,7 @@ let s:result = []
 let s:bang = ""
 let s:current_mode = 0
 let s:auto_trans_mode = 1
+let s:support_popup = has("patch-8.1.1444")
 
 " translate
 function! translate#translate(bang, line1, line2, ...) abort
@@ -37,9 +38,24 @@ function! translate#translate(bang, line1, line2, ...) abort
     if s:current_mode == s:auto_trans_mode
         let start = 1
         let end = getpos("$")[1]
-        let cmd = s:create_cmd(s:getline(start, end, ln, a:000), s:bang)
+        let line = s:getline(start, end, ln, a:000)
+        if empty(line)
+            return
+        endif
+        let cmd = s:create_cmd(line, s:bang)
     else
-        let cmd = s:create_cmd(s:getline(start, end, ln, a:000), a:bang)
+        let line = s:getline(start, end, ln, a:000)
+        let cmd = s:create_cmd(line, s:bang)
+    endif
+
+    if empty(cmd)
+        return
+    endif
+    if !executable(cmd[0])
+        echohl ErrorMsg
+        echomsg 'Please install gtrans command: https://github.com/skanehira/gtran'
+        echohl None
+        return
     endif
 
     echo "Translating..."
@@ -57,7 +73,7 @@ function! s:getline(start, end, ln, args) abort
     endif
 
     if empty(text)
-        finish
+        return ""
     endif
 
     return join(text, a:ln)
@@ -66,7 +82,7 @@ endfunction
 " create gtran command with text and bang
 function! s:create_cmd(text, bang) abort
     if a:text == ""
-        return
+        return []
     endif
 
     let source_ = get(g:, "translate_source", "en")
@@ -87,47 +103,84 @@ endfunction
 " set command result to translate window buffer
 function! s:tran_exit_cb(job, status) abort
     call s:create_tran_window()
-    call setline(1, s:result)
     call s:focus_window(bufnr(s:currentw))
     echo ""
 endfunction
 
+" close popup window when cursor is moved
+function! s:popup_filter(winid, key)
+    " not catch CursorHold event
+    " when airblade/vim-gitgutter is installed CursolHold event will send
+    if a:key != "\<CursorHold>"
+        call feedkeys(a:key, mode())
+        call popup_close(a:winid)
+        return 1
+    endif
+    return 0
+endfunc
+
 " create translate result window
 function! s:create_tran_window() abort
-    let s:currentw = bufnr('%')
+    if s:support_popup
+        popupc
+        if !empty(s:result)
+            let maxwidth = 30
+            for str in s:result
+                let length = len(str)
+                if  length > maxwidth
+                    let maxwidth = length
+                endif
+            endfor
 
-    let winsize_ = get(g:,"translate_winsize", 10)
-    if !bufexists(s:translate_bufname)
-        " create new buffer
-        execute str2nr(winsize_).'new' s:translate_bufname
-    else
-        " focus translate window
-        let tranw = bufnr(s:translate_bufname)
-        if empty(win_findbuf(tranw))
-            execute str2nr(winsize_).'new|e' s:translate_bufname
+            let pos = getpos(".")
+            let result_height = len(s:result)
+
+            let line = "cursor-".printf("%d", result_height)
+            if pos[1] <  result_height
+                let line = "cursor"
+            endif
+
+            call winbufnr(popup_create(s:result, {"pos":"topleft", "line":line, "col":"cursor", "maxwidth":maxwidth, "filter":function("s:popup_filter")}))
         endif
-        call s:focus_window(tranw)
-    endif
+    else
+        let s:currentw = bufnr("%")
 
-    silent % d _
+        let winsize_ = get(g:,"translate_winsize", 10)
+        if !bufexists(s:translate_bufname)
+            " create new buffer
+            execute str2nr(winsize_)."new" s:translate_bufname
+        else
+            " focus translate window
+            let tranw = bufnr(s:translate_bufname)
+            if empty(win_findbuf(tranw))
+                execute str2nr(winsize_)."new|e" s:translate_bufname
+            endif
+            call s:focus_window(tranw)
+        endif
+
+        silent % d _
+        if !empty(s:result)
+            call setline(1, s:result)
+        endif
+    endif
 endfunction
 
 " close specified window
-function! s:close_window(wn) abort
-    if a:wn != ""
-        let list = win_findbuf(a:wn)
+function! s:close_window(bid) abort
+    if a:bid != ""
+        let list = win_findbuf(a:bid)
         if !empty(list)
             execute win_id2win(list[0]) "close!"
-            execute "bdelete!" a:wn
+            execute "bdelete!" a:bid
         endif
     endif
 endfunction
 
 " focus spcified window.
-" wn arg is window number that can use bufnr to get.
-function! s:focus_window(wn) abort
-    if !empty(win_findbuf(a:wn))
-        call win_gotoid(win_findbuf(a:wn)[0])
+" bid arg is buffer id that can use bufnr to get.
+function! s:focus_window(bid) abort
+    if !empty(win_findbuf(a:bid))
+        call win_gotoid(win_findbuf(a:bid)[0])
     endif
 endfunction
 
