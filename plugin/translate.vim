@@ -121,7 +121,7 @@ endfunc
 
 " create translate result window
 function! s:create_tran_window() abort
-    if s:support_popup
+    if s:support_popup && s:current_mode == 0
         popupc
         if !empty(s:result)
             let maxwidth = 30
