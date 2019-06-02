@@ -133,14 +133,14 @@ function! s:create_tran_window() abort
             endfor
 
             let pos = getpos(".")
-            let result_height = len(s:result)
+            let result_height = len(s:result) + 2 " 2 is border thickness
 
             let line = "cursor-".printf("%d", result_height)
             if pos[1] <  result_height
                 let line = "cursor"
             endif
 
-            call winbufnr(popup_create(s:result, {"pos":"topleft", "line":line, "col":"cursor", "maxwidth":maxwidth, "filter":function("s:popup_filter")}))
+            call winbufnr(popup_create(s:result, {"pos":"topleft", "border": [1, 1, 1, 1], "line":line, "col":"cursor", "maxwidth":maxwidth, "filter":function("s:popup_filter")}))
         endif
     else
         let s:currentw = bufnr("%")
