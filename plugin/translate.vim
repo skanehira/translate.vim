@@ -38,9 +38,14 @@ function! translate#translate(bang, line1, line2, ...) abort
     if s:current_mode == s:auto_trans_mode
         let start = 1
         let end = getpos("$")[1]
-        let cmd = s:create_cmd(s:getline(start, end, ln, a:000), s:bang)
+        let line = s:getline(start, end, ln, a:000)
+        if empty(line)
+            return
+        endif
+        let cmd = s:create_cmd(line, s:bang)
     else
-        let cmd = s:create_cmd(s:getline(start, end, ln, a:000), a:bang)
+        let line = s:getline(start, end, ln, a:000)
+        let cmd = s:create_cmd(line, s:bang)
     endif
 
     echo "Translating..."
@@ -58,7 +63,7 @@ function! s:getline(start, end, ln, args) abort
     endif
 
     if empty(text)
-        finish
+        return ""
     endif
 
     return join(text, a:ln)
@@ -116,30 +121,29 @@ function! s:create_tran_window() abort
                     let maxwidth = length
                 endif
             endfor
-            let pos = getpos('.')
-            let line = pos[1]
-            let col = pos[2]
 
-            if line <= 1
-                let line = line + len(s:result)
-            else
-                let line = line - len(s:result)
+            let pos = getpos(".")
+            let result_height = len(s:result)
+
+            let line = "cursor-".printf("%d", result_height)
+            if pos[1] <  result_height
+                let line = "cursor"
             endif
 
-            call winbufnr(popup_create(s:result, {'line':line, 'col':col, 'maxwidth': maxwidth, 'filter': function("s:popup_filter")}))
+            call winbufnr(popup_create(s:result, {"pos":"topleft", "line":line, "col":"cursor", "maxwidth":maxwidth, "filter":function("s:popup_filter")}))
         endif
     else
-        let s:currentw = bufnr('%')
+        let s:currentw = bufnr("%")
 
         let winsize_ = get(g:,"translate_winsize", 10)
         if !bufexists(s:translate_bufname)
             " create new buffer
-            execute str2nr(winsize_).'new' s:translate_bufname
+            execute str2nr(winsize_)."new" s:translate_bufname
         else
             " focus translate window
             let tranw = bufnr(s:translate_bufname)
             if empty(win_findbuf(tranw))
-                execute str2nr(winsize_).'new|e' s:translate_bufname
+                execute str2nr(winsize_)."new|e" s:translate_bufname
             endif
             call s:focus_window(tranw)
         endif
