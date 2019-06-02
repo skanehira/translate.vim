@@ -48,6 +48,16 @@ function! translate#translate(bang, line1, line2, ...) abort
         let cmd = s:create_cmd(line, s:bang)
     endif
 
+    if empty(cmd)
+        return
+    endif
+    if !executable(cmd[0])
+        echohl ErrorMsg
+        echomsg 'Please install gtrans command: https://github.com/skanehira/gtran'
+        echohl None
+        return
+    endif
+
     echo "Translating..."
     let job = job_start(cmd, {
                 \"callback": function("s:tran_out_cb"),
@@ -72,7 +82,7 @@ endfunction
 " create gtran command with text and bang
 function! s:create_cmd(text, bang) abort
     if a:text == ""
-        return
+        return []
     endif
 
     let source_ = get(g:, "translate_source", "en")
