@@ -1,16 +1,19 @@
 # translate.vim
 This is language translate plugin.
 
-![](https://i.imgur.com/cjHW4ks.gif)
+![](https://i.imgur.com/lwplmKF.gif)
 ![](https://i.imgur.com/P0AJJBJ.gif)
-![](https://i.imgur.com/maB2QXI.gif)
 ![](https://i.imgur.com/ezLCrSG.gif)
+
+# Features
+- translate
+- support popup window in vim 8.1.1444
 
 # Requirement
 - [gtran](https://github.com/skanehira/gtran)
 
 # Installtion
-Add this repo to the plugin manager.  
+Add this repo using the plugin manager.  
 Ex: dein.vim
 
 ```toml
