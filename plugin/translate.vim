@@ -22,7 +22,6 @@ let s:result = []
 let s:bang = ""
 let s:current_mode = 0
 let s:auto_trans_mode = 1
-let s:support_popup = has("patch-8.1.1453")
 
 " translate
 function! translate#translate(bang, line1, line2, ...) abort
@@ -109,8 +108,13 @@ endfunction
 
 " create translate result window
 function! s:create_tran_window() abort
-    if s:support_popup && s:current_mode == 0
-        popupc
+    if has("patch-8.1.1453") && s:current_mode == 0
+        if has("patch-8.1.1513")
+            call popup_clear()
+        else
+            popupc
+        endif
+
         if !empty(s:result)
             let maxwidth = 30
             for str in s:result
