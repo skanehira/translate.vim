@@ -44,7 +44,7 @@ function! translate#translate(bang, line1, line2, ...) abort
         let cmd = s:create_cmd(line, s:bang)
     else
         let line = s:getline(start, end, ln, a:000)
-        let cmd = s:create_cmd(line, s:bang)
+        let cmd = s:create_cmd(line, a:bang)
     endif
 
     if empty(cmd)
