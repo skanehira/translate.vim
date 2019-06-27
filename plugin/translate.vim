@@ -129,7 +129,7 @@ function! s:create_tran_window() abort
 
             let line = "cursor-".printf("%d", result_height)
             if pos[1] <  result_height
-                let line = "cursor"
+                let line = "cursor+1"
             endif
 
             call winbufnr(popup_create(s:result, {
