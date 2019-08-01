@@ -6,13 +6,14 @@ This is language translate plugin.
 
 # Features
 - translate
-- support popup window in vim 8.1.1444
+- support popup window
 
 # Requirement
 - [gtran](https://github.com/skanehira/gtran)
+- vim 8.1.1513 or above
 
 # Installtion
-Add this repo using the plugin manager.  
+Add this repo using the plugin manager.
 Ex: dein.vim
 
 ```toml
@@ -23,7 +24,7 @@ repo = 'skanehira/translate.vim'
 # Usage
 The default is to translate English into Japanese.
 
-The language code is bellow.  
+The language code is bellow.
 https://cloud.google.com/translate/docs/languages
 
 Translate current line
