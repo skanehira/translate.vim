@@ -28,6 +28,7 @@ CONTENTS					*translate-contents*
 INTRODUCTION			|translate-introduction|
 USAGE				|translate-usage|
 INTERFACE			|translate-interface|
+  VARIABLES			  |translate-variables|
   COMMANDS			  |translate-commands|
   KEY-MAPPINGS			  |translate-key-mappings|
   FUNCTIONS			  |translate-functions|
@@ -53,7 +54,7 @@ USAGE						*translate-usage*
 INTERFACE					*translate-interface*
 
 ------------------------------------------------------------------------------
-VARIABLES					*vsession-variables*
+VARIABLES					*translate-variables*
 
 g:translate_source				*g:translate_source*
 	Default value: "en"
@@ -73,12 +74,12 @@ g:translate_winsize				*g:translate_winsize*
 COMMANDS					*translate-commands*
 
 :Translate[!] {text}				*:Translate*
-	Translate {text} to *g:translate_target*
-	Use the ! to translate *g:translate_target* to *g:translate_source*
+	Translate {text} to g:translate_target
+	Use the ! to translate g:translate_target to g:translate_source
 
 :AutoTranslateModeEnable[!]			*:AutoTranslateModeEnable*
 	Start auto translate current buffer sentence with <CR>.
-	Use the ! to translate *g:translate_target* to *g:translate_source*
+	Use the ! to translate g:translate_target to g:translate_source
 
 :AutoTranslateModeDisable[!]			*:AutoTranslateModeDisable*
 	Disable Auto translate mode.
