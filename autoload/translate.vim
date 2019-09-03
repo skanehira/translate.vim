@@ -159,8 +159,7 @@ function! s:close_window(bid) abort
 	if a:bid != ""
 		let list = win_findbuf(a:bid)
 		if !empty(list)
-			execute win_id2win(list[0]) "close!"
-			execute "bdelete!" a:bid
+			execute "bw!" a:bid
 		endif
 	endif
 endfunction
