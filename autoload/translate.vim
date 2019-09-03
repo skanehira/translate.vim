@@ -43,6 +43,7 @@ function! translate#translate(bang, line1, line2, ...) abort
     if empty(cmd)
         return
     endif
+
     if !executable(cmd[0])
         echohl ErrorMsg
         echomsg 'Please install gtrans command: https://github.com/skanehira/gtran'
@@ -95,12 +96,14 @@ endfunction
 " set command result to translate window buffer
 function! s:tran_exit_cb(job, status) abort
     call s:create_tran_window()
-    call s:focus_window(bufnr(s:currentw))
+    call s:focus_window(s:currentw)
     echo ""
 endfunction
 
 " create translate result window
 function! s:create_tran_window() abort
+    let s:currentw = winnr()
+
     if has("patch-8.1.1513") && s:current_mode == 0
         call popup_close(s:last_popup_window)
 
@@ -132,19 +135,17 @@ function! s:create_tran_window() abort
                         \ })
         endif
     else
-        let s:currentw = bufnr("%")
-
         let winsize_ = get(g:,"translate_winsize", 10)
         if !bufexists(s:translate_bufname)
             " create new buffer
-            execute str2nr(winsize_)."new" s:translate_bufname
+            execute str2nr(winsize_) . "new" s:translate_bufname
         else
             " focus translate window
             let tranw = bufnr(s:translate_bufname)
             if empty(win_findbuf(tranw))
-                execute str2nr(winsize_)."new|e" s:translate_bufname
+                execute str2nr(winsize_) . "new | e" s:translate_bufname
             endif
-            call s:focus_window(tranw)
+            "call s:focus_window(tranw)
         endif
 
         silent % d _
@@ -156,29 +157,24 @@ endfunction
 
 " close specified window
 function! s:close_window(bid) abort
-    if a:bid != ""
-        let list = win_findbuf(a:bid)
-        if !empty(list)
-            execute "bw!" a:bid
-        endif
-    endif
+    execute "bw!" a:bid
+    redraw
+    echo "deleted"
 endfunction
 
 " focus spcified window.
 " bid arg is buffer id that can use bufnr to get.
-function! s:focus_window(bid) abort
-    if !empty(win_findbuf(a:bid))
-        call win_gotoid(win_findbuf(a:bid)[0])
-    endif
+function! s:focus_window(winid) abort
+    call win_gotoid(a:winid)
 endfunction
 
 " enable auto translate mode
 function! translate#autoTranslateModeEnable(bang) abort
     if s:current_mode != s:auto_trans_mode
-        inoremap <CR> <C-o>:Translate<CR><CR>
+        inoremap <buffer> <CR> <C-o>:Translate<CR><CR>
         let s:current_mode = s:auto_trans_mode
         call s:create_tran_window()
-        call s:focus_window(bufnr(s:currentw))
+        call s:focus_window(s:currentw)
         let s:bang = a:bang
     endif
 endfunction
@@ -189,10 +185,6 @@ function! translate#autoTranslateModeDisable(bang) abort
     let s:current_mode = 0
     " reset result
     let s:result = []
-    " unmap
-    if !empty(maparg("\<CR\>", "i"))
-        iunmap <CR>
-    endif
     call s:close_window(bufnr(s:translate_bufname))
 endfunction
 
