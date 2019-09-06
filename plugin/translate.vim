@@ -7,7 +7,7 @@ set cpo&vim
 
 scriptencoding utf-8
 
-if exists('g:loaded_translate')
+if exists('g:loaded_translate') || has('nvim')
 	finish
 endif
 
