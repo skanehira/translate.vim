@@ -1,8 +1,7 @@
 # translate.vim
 This is language translate plugin.
 
-![](screenshots/translate_popup.gif)
-![](screenshots/translate_auto.gif)
+![](https://github.com/skanehira/translate.vim/blob/img/screenshots/translate.vim.gif?raw=true)
 
 # Features
 - translate
