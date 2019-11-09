@@ -1,4 +1,4 @@
-" Version: 0.0.2
+" Version: 0.0.3
 " Author: skanehira <sho19921005@gmail.com>
 " License: MIT
 
@@ -36,8 +36,12 @@ function! translate#translate(bang, line1, line2, ...) abort
         endif
         let cmd = s:create_cmd(line, s:bang)
     else
-        let line = s:getline(start, end, ln, a:000)
-        let cmd = s:create_cmd(line, a:bang)
+        if empty(a:000)
+            let text = s:getwords_last_visual()
+        else
+            let text = join(a:000, ln)
+        endif
+        let cmd = s:create_cmd(text, a:bang)
     endif
 
     if empty(cmd)
@@ -60,9 +64,10 @@ endfunction
 
 " get text from selected lines or args
 function! s:getline(start, end, ln, args) abort
-    let text = getline(a:start, a:end)
     if !empty(a:args)
         let text = a:args
+    else
+        let text = getline(a:start, a:end)
     endif
 
     if empty(text)
@@ -71,6 +76,27 @@ function! s:getline(start, end, ln, args) abort
 
     return join(text, a:ln)
 endfunction
+
+" get text from last selected words
+function! s:getwords_last_visual() abort
+    let reg = '"'
+    " save
+    let save_reg = getreg(reg)
+    let save_regtype = getregtype(reg)
+    let save_ve = &virtualedit
+
+    set virtualedit=
+
+    silent exec 'normal! gv"'.reg."y"
+    let text = getreg(reg)
+
+    " resotore
+    call setreg(reg, save_reg, save_regtype)
+    let &virtualedit = save_ve
+
+    return text
+endfunction
+
 
 " create gtran command with text and bang
 function! s:create_cmd(text, bang) abort
