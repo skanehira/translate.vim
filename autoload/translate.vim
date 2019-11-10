@@ -64,10 +64,9 @@ endfunction
 
 " get text from selected lines or args
 function! s:getline(start, end, ln, args) abort
+    let text = getline(a:start, a:end)
     if !empty(a:args)
         let text = a:args
-    else
-        let text = getline(a:start, a:end)
     endif
 
     if empty(text)
