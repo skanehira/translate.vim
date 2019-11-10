@@ -70,10 +70,6 @@ g:translate_winsize				*g:translate_winsize*
 	Default value: 10
 	Setting TRANSLATE RESULT window height size.
 
-g:translate_no_mappings				*g:translate_no_mappings*
-	Default value: 0
-	If set to 1, the default key mapping is not define.
-
 ------------------------------------------------------------------------------
 COMMANDS					*translate-commands*
 
@@ -102,14 +98,6 @@ KEY-MAPPINGS					*translate-key-mappings*
 	Execute translate selected words.
 	Translate g:translate_target to g:translate_source.
 
-						*g:translate_no_mappings*
-Following key mappings will NOT be defined if it's already mapped,
-or |g:translate_no_mappings| has been set to 1.
-
-{lhs}		{rhs}
---------	-----------------------------
-[tr		<Plug>(VTranslate)
-]tr		<Plug>(VTranslateBang)
 
 ------------------------------------------------------------------------------
 FUNCTIONS					*translate-functions*

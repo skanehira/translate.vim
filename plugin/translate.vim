@@ -21,14 +21,6 @@ command! -bang -nargs=0 AutoTranslateModeToggle call translate#autoTranslateMode
 vnoremap <silent> <Plug>(VTranslate)     :<C-u>Translate<CR>
 vnoremap <silent> <Plug>(VTranslateBang) :<C-u>Translate!<CR>
 
-if !get(g:, 'translate_no_mappings', 0)
-    if !hasmapto('<Plug>(VTranslate)', 'v')
-        silent! xmap <unique> [tr <Plug>(VTranslate)
-    endif
-    if !hasmapto('<Plug>(VTranslateBang)', 'v')
-        silent! xmap <unique> ]tr <Plug>(VTranslateBang)
-    endif
-endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
