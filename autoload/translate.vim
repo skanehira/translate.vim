@@ -37,7 +37,7 @@ function! translate#translate(bang, line1, line2, ...) abort
         let cmd = s:create_cmd(line, s:bang)
     else
         if empty(a:000)
-            let text = s:getwords_last_visual()
+            let text = s:getwords_last_visual(ln)
         else
             let text = join(a:000, ln)
         endif
@@ -77,7 +77,7 @@ function! s:getline(start, end, ln, args) abort
 endfunction
 
 " get text from last selected words
-function! s:getwords_last_visual() abort
+function! s:getwords_last_visual(ln) abort
     let reg = '"'
     " save
     let save_reg = getreg(reg)
@@ -87,13 +87,13 @@ function! s:getwords_last_visual() abort
     set virtualedit=
 
     silent exec 'normal! gv"'.reg."y"
-    let text = getreg(reg)
+    let lines = getreg(reg, 1, 1)
 
     " resotore
     call setreg(reg, save_reg, save_regtype)
     let &virtualedit = save_ve
 
-    return text
+    return join(lines, a:ln)
 endfunction
 
 
