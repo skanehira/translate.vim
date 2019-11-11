@@ -18,5 +18,9 @@ command! -bang -nargs=0 AutoTranslateModeEnable call translate#autoTranslateMode
 command! -bang -nargs=0 AutoTranslateModeDisable call translate#autoTranslateModeDisable("<bang>")
 command! -bang -nargs=0 AutoTranslateModeToggle call translate#autoTranslateModeToggle("<bang>")
 
+vnoremap <silent> <Plug>(VTranslate)     :<C-u>Translate<CR>
+vnoremap <silent> <Plug>(VTranslateBang) :<C-u>Translate!<CR>
+
+
 let &cpo = s:save_cpo
 unlet s:save_cpo

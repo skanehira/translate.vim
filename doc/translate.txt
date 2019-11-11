@@ -1,6 +1,6 @@
 *translate.txt*	a summary
 
-Version : 0.0.1
+Version : 0.0.3
 Author  : skanehira <sho19921005@gmai.com>
 License : MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
@@ -90,6 +90,15 @@ COMMANDS					*translate-commands*
 ------------------------------------------------------------------------------
 KEY-MAPPINGS					*translate-key-mappings*
 
+<Plug>(VTranslate)				*<Plug>(VTranslate)*
+	Execute translate selected words.
+	Translate g:translate_source to g:translate_target.
+
+<Plug>(VTranslateBang)				*<Plug>(VTranslateBang)*
+	Execute translate selected words.
+	Translate g:translate_target to g:translate_source.
+
+
 ------------------------------------------------------------------------------
 FUNCTIONS					*translate-functions*
 
@@ -102,6 +111,9 @@ TODO						*translate-todo*
 ==============================================================================
 CHANGELOG					*translate-changelog*
 
+0.0.3	2019-11-09
+	- Add |<Plug>(VTranslate)|
+	- Add |<Plug>(VTranslateBang)|
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:

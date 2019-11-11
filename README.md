@@ -78,3 +78,9 @@ let g:translate_target = "ja"
 let g:translate_winsize = 10
 ```
 
+You can also set key mappings.
+```vim
+xmap <Space>tr <Plug>(VTranslate)
+xmap <Space>tr <Plug>(VTranslateBang)
+```
+
