@@ -1,19 +1,18 @@
 # translate.vim
-This is language translate plugin.
+This is translate language plugin.
 
-![](https://github.com/skanehira/translate.vim/blob/img/screenshots/translate.vim.gif?raw=true)
+![](https://i.imgur.com/p3WsE8P.gif)
 
 # Features
 - translate
-- support popup window
 
 # Requirement
-- [gtran](https://github.com/skanehira/gtran)
+- curl
 - vim 8.1.1513 or above
 
 # Installtion
-Add this repo using the plugin manager.
-Ex: dein.vim
+You can use the plugin manager or Vim8 package manager.
+eg: dein.vim
 
 ```toml
 [[plugins]]
@@ -33,12 +32,14 @@ Translate current line
 
 Translate specified words
 ```vim
+" result: こんにちは私の名前はゴリラです
 :Translate hello my name is gorilla
 ```
 
-Toggle between resource and target to translate when using "!"
+Reverse between resource and target to translate when using "!"
 ```vim
-:Translate!
+" result: It's a gorilla
+:Translate! ゴリラです
 ```
 
 Translate selected lines
@@ -46,41 +47,17 @@ Translate selected lines
 :'<,'>Translate
 ```
 
-Auto translate mode enable
-```vim
-:AutoTranslateModeEnable
-```
-
-Switch source and target
-```vim
-:AutoTranslateModeEnable!
-```
-
-Auto translate mode enable
-```vim
-:AutoTranslateModeToggle
-```
-
-Switch source and target
-```vim
-:AutoTranslateModeToggle!
-```
-
-Auto translate mode disable
-```vim
-:AutoTranslateModeDisable
-```
-
-You can set translate source, target and result window size.
+You can use below options
 ```vim
 let g:translate_source = "en"
 let g:translate_target = "ja"
-let g:translate_winsize = 10
+let g:translate_popup_window = 0 " if you want use popup window, set value 1
+let g:translate_winsize = 10 " set buffer window height size if you doesn't use popup window
 ```
 
 You can also set key mappings.
-```vim
-xmap <Space>tr <Plug>(VTranslate)
-xmap <Space>tr <Plug>(VTranslateBang)
-```
 
+```vim
+nmap gr <Plug>(Translate)
+vmap t <Plug>(VTranslate)
+```
