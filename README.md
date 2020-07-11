@@ -61,3 +61,5 @@ You can also set key mappings.
 nmap gr <Plug>(Translate)
 vmap t <Plug>(VTranslate)
 ```
+
+If you using popup window and you want yank translate result, you can use `y` to do it.

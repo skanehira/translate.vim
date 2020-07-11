@@ -79,6 +79,14 @@ function! s:tran_exit_cb(job, status) abort
   call s:create_window()
 endfunction
 
+function! s:filter(id, key) abort
+  if a:key ==# 'y'
+    call setreg(v:register, s:result)
+    call popup_close(a:id)
+    return 1
+  endif
+endfunction
+
 " create translate result window
 function! s:create_window() abort
   if empty(s:result)
@@ -112,6 +120,7 @@ function! s:create_window() abort
           \ "maxwidth": maxwidth,
           \ 'borderchars': ['-','|','-','|','+','+','+','+'],
           \ "moved": "any",
+          \ "filter": function("s:filter"),
           \ })
   else
     let current = win_getid()
