@@ -75,6 +75,7 @@ endfunction
 
 " set command result to translate window buffer
 function! s:tran_exit_cb(job, status) abort
+  echo ""
   call s:create_window()
 endfunction
 
@@ -136,7 +137,6 @@ function! s:create_window() abort
     " set tranlsate result
     silent % d _
     call setline(1, s:result)
-    echo ""
 
     call win_gotoid(current)
   endif
