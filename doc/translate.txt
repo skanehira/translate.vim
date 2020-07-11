@@ -84,8 +84,11 @@ COMMANDS					*translate-commands*
 ------------------------------------------------------------------------------
 KEY-MAPPINGS					*translate-key-mappings*
 
-<Plug>(Translate)				*<Plug>(VTranslate)*
-	Execute translate selected line.
+<Plug>(Translate)				*<Plug>(Translate)*
+	Translate selected line.
+
+<Plug>(VTranslate)				*<Plug>(VTranslate)*
+	Translate selected lines.
 
 ------------------------------------------------------------------------------
 FUNCTIONS					*translate-functions*
@@ -104,7 +107,7 @@ CHANGELOG					*translate-changelog*
 	- Add |<Plug>(VTranslateBang)|
 1.0.0   2020-07-11
 	- Remove auto translate feature
-	- Remove |<Plug>(VTranslateBang)| and |<Plug>(VTranslate)|
+	- Remove |<Plug>(VTranslateBang)|
 	- Use curl to translate
 	- Add options as below
 	  - |g:translate_popup_window|
