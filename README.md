@@ -8,7 +8,7 @@ This is translate language plugin.
 
 # Requirement
 - curl
-- vim 8.1.1513 or above
+- vim 8.1.1513 or above/Neovim
 
 # Installtion
 You can use the plugin manager or Vim8 package manager.
