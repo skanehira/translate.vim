@@ -35,11 +35,19 @@ function! translate#translate(bang, start, end, ...) abort
 
   echo "Translating..."
   let s:result = []
-  call job_start(cmd, {
-        \ "out_cb": function("s:tran_out_cb"),
-        \ "err_cb": function("s:tran_out_cb"),
-        \ "exit_cb": function("s:tran_exit_cb"),
-        \ })
+
+  if has('nvim')
+    call jobstart(cmd, {
+          \ 'on_stdout': { id, data -> extend(s:result, data) },
+          \ 'on_exit': { -> s:create_window() },
+          \ })
+  else
+    call job_start(cmd, {
+          \ "out_cb": function("s:tran_out_cb"),
+          \ "err_cb": function("s:tran_out_cb"),
+          \ "exit_cb": function("s:tran_exit_cb"),
+          \ })
+  endif
 endfunction
 
 " get text from selected lines or args
@@ -59,10 +67,10 @@ function! s:create_cmd(text, bang) abort
 
   let cmd = ["curl", "-s", "-L", s:endpoint, "-d"]
   if a:bang == '!'
-    let body = json_encode(#{source: target, target: source, text: a:text})
+    let body = json_encode({'source': target, 'target': source, 'text': a:text})
     let cmd = cmd + [body]
   else
-    let body = json_encode(#{source: source, target: target, text: a:text})
+    let body = json_encode({'source': source, 'target': target, 'text': a:text})
     let cmd = cmd + [body]
   endif
   return cmd
@@ -75,7 +83,6 @@ endfunction
 
 " set command result to translate window buffer
 function! s:tran_exit_cb(job, status) abort
-  echo ""
   call s:create_window()
 endfunction
 
@@ -89,6 +96,11 @@ endfunction
 
 " create translate result window
 function! s:create_window() abort
+  echo ""
+  if has('nvim')
+    " EOF is a single-item list on neovim
+    call remove(s:result, -1)
+  endif
   if empty(s:result)
     call s:echoerr("no translate result")
     return
