@@ -106,34 +106,54 @@ function! s:create_window() abort
     return
   endif
 
-  if exists("*popup_atcursor") && get(g:, "translate_popup_window", 1)
-    call popup_close(s:last_popup_window)
-    " get max width
-    let maxwidth = 30
+  if get(g:, "translate_popup_window", 1)
+    let max_height = len(s:result)
+    let max_width = 10
     for str in s:result
-      let length = len(str)
-      if  length > maxwidth
-        let maxwidth = length
+      let length = strdisplaywidth(str)
+      if  length > max_width
+        let max_width = length
       endif
     endfor
 
-    let pos = getpos(".")
-    let result_height = len(s:result) + 2 " 2 is border thickness
+    if exists("*popup_atcursor")
+      call popup_close(s:last_popup_window)
 
-    let line = "cursor-" . printf("%d", result_height)
-    if pos[1] < result_height
-      let line = "cursor+1"
+      let pos = getpos(".")
+
+      " 2 is border thickness
+      let line = "cursor-" . printf("%d", max_height + 2)
+      if pos[1] < max_height
+        let line = "cursor+1"
+      endif
+
+      let s:last_popup_window = popup_atcursor(s:result, {
+            \ "pos":"topleft",
+            \ "border": [1, 1, 1, 1],
+            \ "line": line,
+            \ "maxwidth": max_width,
+            \ 'borderchars': ['-','|','-','|','+','+','+','+'],
+            \ "moved": "any",
+            \ "filter": function("s:filter"),
+            \ })
+    elseif exists('*nvim_create_buf')
+      let s:last_popup_bufid = nvim_create_buf(v:false, v:true)
+      let opts = {
+            \ 'relative': 'win',
+            \ 'width': max_width,
+            \ 'height': max_height,
+            \ 'bufpos': [line("."), 0],
+            \ 'row': -1,
+            \ 'col': 0,
+            \ 'style': 'minimal'
+            \ }
+      let s:last_popup_window = nvim_open_win(s:last_popup_bufid, 0, opts)
+      call nvim_set_current_win(s:last_popup_window)
+      noremap <buffer> <silent> q :bw!<CR>
+      call nvim_buf_set_lines(s:last_popup_bufid, 0, -1, v:true, s:result)
+    else
+      call s:echoerr("this version doesn't support popup or floating window")
     endif
-
-    let s:last_popup_window = popup_atcursor(s:result, {
-          \ "pos":"topleft",
-          \ "border": [1, 1, 1, 1],
-          \ "line": line,
-          \ "maxwidth": maxwidth,
-          \ 'borderchars': ['-','|','-','|','+','+','+','+'],
-          \ "moved": "any",
-          \ "filter": function("s:filter"),
-          \ })
   else
     let current = win_getid()
     let winsize = get(g:,"translate_winsize", len(s:result) + 2)
