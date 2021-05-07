@@ -1,6 +1,6 @@
 *translate.txt*	a summary
 
-Version : 1.0.0
+Version : 1.0.1
 Author  : skanehira <sho19921005@gmai.com>
 License : MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
@@ -68,11 +68,11 @@ g:translate_target				*g:translate_target*
 
 g:translate_winsize				*g:translate_winsize*
 	Default value: result line's height
-	Set translate result window height size.
+	Set translate result window.
 
 g:translate_popup_window			*g:translate_popup_window*
 	Default value: 1
-	Display translate result in popup window.
+	Display translate result in popup or floating window.
 
 g:translate_endpoint				*translate_endpoint*
 	The translate api endpoint.
@@ -81,8 +81,12 @@ g:translate_endpoint				*translate_endpoint*
 COMMANDS					*translate-commands*
 
 :Translate[!] {text}				*:Translate*
-	Translate {text} to g:translate_target
-	Use the ! to translate |g:translate_target| to |g:translate_source|
+	Translate {text} to g:translate_target.
+	Use the ! to translate |g:translate_target| to |g:translate_source|.
+	When you using Neovim, result will displayed in floating window.
+	You can use `q` to close float window.
+	When you using Vim, result will displayed in popup window,
+	and that will closed by any cursor moving
 
 ------------------------------------------------------------------------------
 KEY-MAPPINGS					*translate-key-mappings*
@@ -116,6 +120,8 @@ CHANGELOG					*translate-changelog*
 	  - |g:translate_popup_window|
 1.0.0	2020-11-16
 	- Make it work with Neovim
+1.0.1	2021-05-07
+	- Support floating window in Neovim
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:noet:fen:
