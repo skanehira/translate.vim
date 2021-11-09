@@ -74,6 +74,12 @@ g:translate_popup_window			*g:translate_popup_window*
 	Default value: 1
 	Display translate result in popup or floating window.
 
+g:translate_use_preview				*g:translate_use_preview*
+	Default value: 0
+	If is set to 1 and |g:translate_popup_window| is set to 0, display the
+	result in preview window (in this case |g:translate_wisize| has no
+	effect.
+
 g:translate_endpoint				*translate_endpoint*
 	The translate api endpoint.
 

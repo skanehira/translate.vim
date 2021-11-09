@@ -52,6 +52,7 @@ You can use below options
 let g:translate_source = "en"
 let g:translate_target = "ja"
 let g:translate_popup_window = 0 " if you want use popup window, set value 1
+let g:translate_use_preview = 0  " if you want get result in preview window reather the popup window keep `g:tranlsate_popup_window = 0` and set this to 1
 let g:translate_winsize = 10 " set buffer window height size if you doesn't use popup window
 ```
 

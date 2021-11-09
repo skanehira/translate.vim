@@ -155,30 +155,42 @@ function! s:create_window() abort
       call s:echoerr("this version doesn't support popup or floating window")
     endif
   else
-    let current = win_getid()
-    let winsize = get(g:,"translate_winsize", len(s:result) + 2)
-
-    if !bufexists(s:translate_bufname)
-      " create new buffer
-      execute str2nr(winsize) . "new" s:translate_bufname
-      set buftype=nofile
-      set ft=translate
-      nnoremap <silent> <buffer> q :<C-u>bwipeout!<CR>
+    if get(g:, "translate_use_preview", 0)
+        exec 'pedit ' . s:translate_bufname
+        wincmd P
+        set buftype=nofile
+        set bufhidden=delete
+        set ft=translate
+        " reset buffer content
+        call deletebufline(bufnr(), 1, getbufinfo(bufnr())[0].linecount)
+        call setline(1, s:result)
+        wincmd p
     else
-      " focus translate window
-      let tranw = bufnr(s:translate_bufname)
-      let winid = win_findbuf(tranw)
-      if empty(winid)
-        execute str2nr(winsize) . "new | e" s:translate_bufname
-      else
-        call win_gotoid(winid[0])
-      endif
+        let current = win_getid()
+        let winsize = get(g:,"translate_winsize", len(s:result) + 2)
+
+        if !bufexists(s:translate_bufname)
+          " create new buffer
+          execute str2nr(winsize) . "new" s:translate_bufname
+          set buftype=nofile
+          set ft=translate
+          nnoremap <silent> <buffer> q :<C-u>bwipeout!<CR>
+        else
+          " focus translate window
+          let tranw = bufnr(s:translate_bufname)
+          let winid = win_findbuf(tranw)
+          if empty(winid)
+            execute str2nr(winsize) . "new | e" s:translate_bufname
+          else
+            call win_gotoid(winid[0])
+          endif
+        endif
+
+        " set tranlsate result
+        silent % d _
+        call setline(1, s:result)
+
+        call win_gotoid(current)
     endif
-
-    " set tranlsate result
-    silent % d _
-    call setline(1, s:result)
-
-    call win_gotoid(current)
   endif
 endfunction
