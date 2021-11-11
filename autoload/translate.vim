@@ -6,6 +6,7 @@ let s:endpoint = get(g:, "translate_endpoint", "https://script.google.com/macros
 let s:translate_bufname = "translate://result"
 let s:last_popup_window = 0
 let s:result = []
+let s:echo_result = 0
 
 function! s:echoerr(msg) abort
   echohl ErrorMsg
@@ -14,7 +15,7 @@ function! s:echoerr(msg) abort
 endfunction
 
 " translate
-function! translate#translate(bang, start, end, ...) abort
+function! translate#translate(bang, start, end, echo_result = 0, ...) abort
   if !executable("curl")
     call s:echoerr("please install curl")
     return
@@ -24,6 +25,8 @@ function! translate#translate(bang, start, end, ...) abort
   if &ff == "dos"
     let ln = "\r\n"
   endif
+
+  let s:echo_result = a:echo_result
 
   let text = s:getline(a:start, a:end, ln, a:000)
   if empty(text)
@@ -106,7 +109,10 @@ function! s:create_window() abort
     return
   endif
 
-  if get(g:, "translate_popup_window", 1)
+  if s:echo_result
+      echo 'Translate result : ' . join(s:result, ' ')
+      let s:echo_result = 0
+  elseif get(g:, "translate_popup_window", 1)
     let max_height = len(s:result)
     let max_width = 10
     for str in s:result

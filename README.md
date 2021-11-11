@@ -47,6 +47,11 @@ Translate selected lines
 :'<,'>Translate
 ```
 
+If you don't want open new window to see result, you can echo it
+```vim
+:TranslateEcho
+```
+
 You can use below options
 ```vim
 let g:translate_source = "en"
