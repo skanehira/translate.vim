@@ -1,4 +1,5 @@
 # translate.vim
+# This plugin is not maintained, please use [denops-translate.vim](https://github.com/skanehira/denops-translate.vim)
 This is translate language plugin.
 
 ![](https://i.imgur.com/p3WsE8P.gif)
