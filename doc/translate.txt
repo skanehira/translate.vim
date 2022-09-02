@@ -88,6 +88,9 @@ COMMANDS					*translate-commands*
 	When you using Vim, result will displayed in popup window,
 	and that will closed by any cursor moving
 
+:TranslateEcho[!] {text}			*:TranslateEcho*
+	Like <:Translate> but echo the result.
+
 ------------------------------------------------------------------------------
 KEY-MAPPINGS					*translate-key-mappings*
 
